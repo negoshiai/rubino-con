@@ -1,0 +1,1178 @@
+```html
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rubino Costruzioni | Costruiamo il futuro, rispettando il passato.</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <style>
+        :root {
+            --rubino-red: #B91C1C;
+            --charcoal: #222222;
+            --architectural-white: #F8F8F8;
+            --textured-concrete: #EAEAEA; /* Lightened for better contrast */
+            --polished-bronze: #A9835B;
+
+            --font-headlines: 'Montserrat', sans-serif;
+            --font-body: 'Lora', serif;
+
+            --transition-fast: 0.3s ease;
+            --transition-smooth: 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* --- BASE & RESET --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px; /* Offset for sticky header */
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--architectural-white);
+            color: var(--charcoal);
+            line-height: 1.7;
+            overflow-x: hidden;
+            cursor: none; /* Hide default cursor */
+        }
+
+        /* --- CURSOR TRAIL --- */
+        .cursor-dot, .cursor-outline {
+            pointer-events: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--rubino-red);
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(185, 28, 28, 0.3);
+            transition: all 0.1s ease-out;
+        }
+        
+        .cursor-outline.hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            background-color: rgba(169, 131, 91, 0.4);
+        }
+
+        body:hover .cursor-dot, body:hover .cursor-outline {
+           opacity: 1;
+        }
+
+        /* --- TYPOGRAPHY & HELPERS --- */
+        h1, h2, h3, h4 {
+            font-family: var(--font-headlines);
+            font-weight: 600;
+            line-height: 1.2;
+            color: var(--charcoal);
+        }
+
+        h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); }
+        h2 { font-size: clamp(2rem, 5vw, 3rem); }
+        h3 { font-size: clamp(1.5rem, 4vw, 2rem); }
+        p { margin-bottom: 1rem; }
+        a {
+            color: var(--rubino-red);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        section {
+            padding: 100px 0;
+            overflow: hidden;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        .section-title h2 {
+            margin-bottom: 10px;
+        }
+        .section-title p {
+            font-family: var(--font-headlines);
+            color: var(--polished-bronze);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--rubino-red);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            font-family: var(--font-headlines);
+            font-weight: 600;
+            border-radius: 50px;
+            transition: var(--transition-fast);
+            border: 2px solid transparent;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background-color: var(--rubino-red);
+            color: var(--architectural-white);
+        }
+        .btn-primary:hover {
+            background-color: transparent;
+            color: var(--rubino-red);
+            border-color: var(--rubino-red);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--polished-bronze);
+            border-color: var(--polished-bronze);
+        }
+        .btn-secondary:hover {
+            background-color: var(--polished-bronze);
+            color: var(--architectural-white);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* --- SCROLL REVEAL ANIMATION --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s var(--transition-smooth), transform 0.8s var(--transition-smooth);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        /* --- HEADER & NAVIGATION --- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: var(--transition-fast);
+            background-color: transparent;
+        }
+        
+        .header.scrolled {
+            background-color: rgba(34, 34, 34, 0.9);
+            padding: 15px 5%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-family: var(--font-headlines);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--architectural-white);
+        }
+        .logo span { color: var(--rubino-red); }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 35px;
+        }
+
+        .nav-links a {
+            font-family: var(--font-headlines);
+            color: var(--architectural-white);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            padding-bottom: 5px;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--rubino-red);
+            transition: var(--transition-fast);
+        }
+        .nav-links a:hover::after, .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        .lang-toggle {
+            font-family: var(--font-headlines);
+            color: var(--architectural-white);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-left: 35px;
+        }
+        .lang-toggle span {
+            opacity: 0.7;
+            cursor: pointer;
+        }
+        .lang-toggle span.active {
+            opacity: 1;
+            color: var(--rubino-red);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 2rem;
+            color: var(--architectural-white);
+            cursor: pointer;
+        }
+
+        /* --- HERO SECTION --- */
+        #home {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--architectural-white);
+            padding: 0 5%;
+            position: relative;
+        }
+
+        .hero-video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -2;
+        }
+        .hero-video-bg video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #home::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(34,34,34,0.8), rgba(34,34,34,0.4));
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+        .hero-content h1 {
+            color: var(--architectural-white);
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease-out;
+        }
+        .hero-content p {
+            font-family: var(--font-headlines);
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: var(--architectural-white);
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s;
+            animation-fill-mode: backwards;
+        }
+        .hero-content .btn {
+             animation: fadeInUp 1s ease-out 0.6s;
+             animation-fill-mode: backwards;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- USP BAR --- */
+        .usp-bar {
+            background-color: var(--charcoal);
+            padding: 40px 0;
+        }
+        .usp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            text-align: center;
+            color: var(--architectural-white);
+        }
+        .usp-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .usp-item i {
+            font-size: 3rem;
+            color: var(--rubino-red);
+            margin-bottom: 15px;
+        }
+        .usp-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--architectural-white);
+        }
+        .usp-item p {
+            font-size: 0.9rem;
+            color: var(--textured-concrete);
+            line-height: 1.5;
+            max-width: 250px;
+        }
+
+        /* --- ABOUT (CHI SIAMO) SECTION --- */
+        #chisiamo {
+            background-color: var(--architectural-white);
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .about-content h3 {
+            color: var(--rubino-red);
+            font-family: var(--font-headlines);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        .about-content p {
+            font-style: italic;
+        }
+        .about-image {
+            position: relative;
+            clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+        }
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 5px;
+        }
+
+        /* --- TIMELINE --- */
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 80px auto 0;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--textured-concrete);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: var(--architectural-white);
+            border: 4px solid var(--polished-bronze);
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-item.left {
+            left: 0;
+        }
+        .timeline-item.right {
+            left: 50%;
+        }
+        .timeline-item.left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 32px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid var(--charcoal);
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent var(--charcoal);
+        }
+        .timeline-item.right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 32px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid var(--charcoal);
+            border-width: 10px 10px 10px 0;
+            border-color: transparent var(--charcoal) transparent transparent;
+        }
+        .timeline-item.right::after {
+            left: -16px;
+        }
+        .timeline-content {
+            padding: 20px 30px;
+            background-color: var(--architectural-white);
+            border: 1px solid var(--textured-concrete);
+            position: relative;
+            border-radius: 6px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        .timeline-content h4 {
+            color: var(--rubino-red);
+            font-weight: 700;
+        }
+
+        /* --- SERVICES SECTION --- */
+        #servizi {
+            background-color: var(--textured-concrete);
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .service-card {
+            background-color: var(--architectural-white);
+            padding: 40px 30px;
+            text-align: center;
+            border-radius: 8px;
+            transition: var(--transition-fast);
+            border-bottom: 4px solid transparent;
+        }
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border-bottom-color: var(--rubino-red);
+        }
+        .service-card i {
+            font-size: 3.5rem;
+            color: var(--rubino-red);
+            margin-bottom: 20px;
+        }
+        .service-card h4 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .service-card p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* --- PROJECTS SECTION --- */
+        .portfolio-filters {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .portfolio-filters button {
+            background: none;
+            border: 2px solid var(--textured-concrete);
+            color: var(--charcoal);
+            padding: 8px 20px;
+            margin: 5px;
+            font-family: var(--font-headlines);
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        .portfolio-filters button.active,
+        .portfolio-filters button:hover {
+            background-color: var(--polished-bronze);
+            border-color: var(--polished-bronze);
+            color: var(--architectural-white);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            height: 280px;
+            transition: var(--transition-fast);
+        }
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .portfolio-item:hover img {
+            transform: scale(1.1);
+        }
+        .portfolio-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(34,34,34,0.9), transparent);
+            padding: 40px 20px 20px;
+            color: var(--architectural-white);
+            transform: translateY(100%);
+            transition: var(--transition-smooth);
+        }
+        .portfolio-item:hover .portfolio-overlay {
+            transform: translateY(0);
+        }
+        .portfolio-overlay h4 {
+            color: var(--architectural-white);
+            margin-bottom: 5px;
+        }
+        .portfolio-overlay span {
+            font-family: var(--font-headlines);
+            font-size: 0.8rem;
+            color: var(--polished-bronze);
+            text-transform: uppercase;
+        }
+        
+        /* --- CTA SECTION --- */
+        #cta {
+            background: linear-gradient(rgba(34,34,34,0.8), rgba(34,34,34,0.8)), url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80') no-repeat center center/cover;
+            background-attachment: fixed;
+            text-align: center;
+            color: var(--architectural-white);
+        }
+        #cta h2 {
+            color: var(--architectural-white);
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        #cta p {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+
+        /* --- CONTACT SECTION --- */
+        #contatti {
+            background-color: var(--textured-concrete);
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: flex-start;
+        }
+        .contact-info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .contact-info-item i {
+            font-size: 2rem;
+            color: var(--rubino-red);
+            margin-right: 20px;
+            width: 40px;
+            text-align: center;
+        }
+        .contact-info-item p {
+            margin: 0;
+            line-height: 1.5;
+        }
+        .contact-info-item strong {
+            font-family: var(--font-headlines);
+        }
+
+        .contact-form .form-group {
+            margin-bottom: 20px;
+        }
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            background-color: var(--architectural-white);
+            transition: var(--transition-fast);
+        }
+        .contact-form input:focus, .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--rubino-red);
+            box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.2);
+        }
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        /* --- FOOTER --- */
+        .footer {
+            background-color: var(--charcoal);
+            color: var(--textured-concrete);
+            padding: 60px 0 30px;
+            text-align: center;
+        }
+        .footer-logo {
+            font-family: var(--font-headlines);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--architectural-white);
+            margin-bottom: 20px;
+        }
+        .footer-logo span { color: var(--rubino-red); }
+        .footer p {
+            max-width: 500px;
+            margin: 0 auto 30px;
+            font-size: 0.9rem;
+        }
+        .social-links {
+            margin-bottom: 30px;
+        }
+        .social-links a {
+            color: var(--architectural-white);
+            font-size: 1.5rem;
+            margin: 0 15px;
+            transition: var(--transition-fast);
+        }
+        .social-links a:hover {
+            color: var(--rubino-red);
+            transform: translateY(-3px);
+        }
+        .copyright {
+            margin-top: 30px;
+            border-top: 1px solid #444;
+            padding-top: 30px;
+            font-size: 0.8rem;
+        }
+        
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 992px) {
+            .about-grid, .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            .about-image {
+                margin-top: 40px;
+                clip-path: none;
+            }
+            .timeline::after {
+                left: 31px;
+            }
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-item.right {
+                left: 0%;
+            }
+            .timeline-item.left::before, .timeline-item.right::before {
+                left: 60px;
+                border: medium solid var(--charcoal);
+                border-width: 10px 10px 10px 0;
+                border-color: transparent var(--charcoal) transparent transparent;
+            }
+            .timeline-item.left::after, .timeline-item.right::after {
+                left: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            html { scroll-padding-top: 70px; }
+            .header { padding: 15px 5%; }
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 100%;
+                height: 100vh;
+                background-color: var(--charcoal);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: right 0.5s ease-in-out;
+            }
+            .nav-links.active {
+                right: 0;
+            }
+            .nav-links li {
+                margin: 20px 0;
+            }
+            .nav-links a {
+                font-size: 1.5rem;
+            }
+            .lang-toggle {
+                display: none; /* Simplification for mobile menu */
+            }
+            .hamburger {
+                display: block;
+                z-index: 1001;
+            }
+            .hamburger.active i::before {
+                content: '\eb59'; /* Boxicon close icon */
+            }
+            section { padding: 80px 0; }
+            .usp-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <header class="header">
+        <a href="#home" class="logo">Rubino<span>.</span></a>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#chisiamo">Chi Siamo</a></li>
+                <li><a href="#servizi">Servizi</a></li>
+                <li><a href="#progetti">Progetti</a></li>
+                <li><a href="#contatti">Contatti</a></li>
+            </ul>
+        </nav>
+        <div class="lang-toggle">
+            <span class="active">IT</span> | <span>EN</span>
+        </div>
+        <div class="hamburger">
+            <i class='bx bx-menu'></i>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- HERO -->
+        <section id="home">
+            <div class="hero-video-bg">
+                <video autoplay muted loop playsinline>
+                    <source src="https://videos.pexels.com/video-files/2422588/2422588-hd_1920_1080_25fps.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="hero-content">
+                <p>Dove la visione prende forma.</p>
+                <h1>Costruiamo il Futuro,<br>Rispettando il Passato.</h1>
+                <a href="#progetti" class="btn btn-primary">Scopri i nostri lavori</a>
+            </div>
+        </section>
+
+        <!-- USP BAR -->
+        <section class="usp-bar">
+            <div class="container usp-grid">
+                <div class="usp-item reveal">
+                    <i class='bx bxs-building-house'></i>
+                    <h4>Costruzioni Civili e Industriali</h4>
+                    <p>Realizziamo edifici moderni e funzionali, progettati per durare nel tempo e rispondere alle esigenze del futuro.</p>
+                </div>
+                <div class="usp-item reveal" style="transition-delay: 0.2s;">
+                    <i class='bx bxs-landmark'></i>
+                    <h4>Restauro Monumentale</h4>
+                    <p>Con maestria e rispetto, ridiamo vita a monumenti storici, preservando il patrimonio culturale italiano.</p>
+                </div>
+                <div class="usp-item reveal" style="transition-delay: 0.4s;">
+                    <i class='bx bxs-badge-check'></i>
+                    <h4>Qualità Certificata</h4>
+                    <p>Il nostro impegno per l'eccellenza è garantito da rigorosi standard di qualità e certificazioni riconosciute.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT (CHI SIAMO) -->
+        <section id="chisiamo">
+            <div class="container">
+                <div class="section-title reveal">
+                    <p>La Nostra Identità</p>
+                    <h2>Una storia di passione, costruita mattone su mattone.</h2>
+                </div>
+                <div class="about-grid">
+                    <div class="about-content reveal">
+                        <h3>La Nostra Filosofia</h3>
+                        <p>In <strong>Rubino Costruzioni</strong>, ogni progetto è la sintesi di due mondi: l'innovazione tecnologica più avanzata e la profonda conoscenza della tradizione costruttiva italiana. Crediamo che il vero progresso non risieda nel dimenticare il passato, ma nel valorizzarlo attraverso soluzioni contemporanee.</p>
+                        <p>La nostra missione è tradurre la visione dei nostri clienti in realtà tangibili, solide e di pregio, garantendo trasparenza, puntualità e un'attenzione maniacale al dettaglio.</p>
+                        <a href="#contatti" class="btn btn-secondary">Parla con un esperto</a>
+                    </div>
+                    <div class="about-image reveal" style="transition-delay: 0.2s;">
+                        <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1400&q=80" alt="Interno di un edificio di lusso che rappresenta la qualità Rubino">
+                    </div>
+                </div>
+
+                <div class="timeline reveal">
+                    <div class="timeline-item left reveal">
+                        <div class="timeline-content">
+                            <h4>1985 - Le Fondamenta</h4>
+                            <p>Nasce Rubino Costruzioni, fondata sulla passione per l'edilizia e un forte legame con il territorio.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item right reveal">
+                        <div class="timeline-content">
+                            <h4>2001 - Prima Grande Opera</h4>
+                            <p>Completiamo il nostro primo complesso industriale, dimostrando capacità di gestione di progetti su larga scala.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item left reveal">
+                        <div class="timeline-content">
+                            <h4>2012 - L'Arte del Restauro</h4>
+                            <p>Iniziamo la nostra specializzazione nel restauro conservativo, intervenendo su un prestigioso palazzo storico.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item right reveal">
+                        <div class="timeline-content">
+                            <h4>2023 - Innovazione & Futuro</h4>
+                            <p>Adottiamo tecnologie BIM e pratiche di costruzione sostenibile, guardando sempre avanti senza dimenticare le nostre radici.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICES -->
+        <section id="servizi">
+            <div class="container">
+                <div class="section-title reveal">
+                    <p>La Nostra Competenza</p>
+                    <h2>Dalle fondamenta al dettaglio finale.</h2>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card reveal">
+                        <i class='bx bx-home-alt'></i>
+                        <h4>Nuove Costruzioni</h4>
+                        <p>Progettiamo e realizziamo complessi residenziali, ville private ed edifici commerciali con un approccio moderno e funzionale.</p>
+                    </div>
+                    <div class="service-card reveal" style="transition-delay: 0.15s;">
+                        <i class='bx bx-wrench'></i>
+                        <h4>Ristrutturazioni</h4>
+                        <p>Trasformiamo spazi esistenti, ottimizzando layout, migliorando l'efficienza energetica e rinnovando le finiture con stile.</p>
+                    </div>
+                    <div class="service-card reveal" style="transition-delay: 0.3s;">
+                        <i class='bx bx-palette'></i>
+                        <h4>Restauro Conservativo</h4>
+                        <p>Il nostro fiore all'occhiello. Interveniamo su beni storici e artistici con tecniche specialistiche per preservarne il valore.</p>
+                    </div>
+                    <div class="service-card reveal" style="transition-delay: 0.45s;">
+                        <i class='bx bx-plug'></i>
+                        <h4>Impiantistica e Opere Speciali</h4>
+                        <p>Realizziamo impianti tecnologici all'avanguardia, opere stradali e lavori speciali che richiedono alta competenza tecnica.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="progetti">
+            <div class="container">
+                <div class="section-title reveal">
+                    <p>Portfolio</p>
+                    <h2>La prova della nostra promessa.</h2>
+                </div>
+                <div class="portfolio-filters reveal">
+                    <button class="filter-btn active" data-filter="all">Tutti</button>
+                    <button class="filter-btn" data-filter="restauro">Restauro</button>
+                    <button class="filter-btn" data-filter="nuova">Nuova Costruzione</button>
+                    <button class="filter-btn" data-filter="industriale">Industriale</button>
+                </div>
+                <div class="portfolio-grid">
+                    <div class="portfolio-item reveal" data-category="nuova">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Villa Moderna">
+                        <div class="portfolio-overlay">
+                            <h4>Villa Privata, Como</h4>
+                            <span>Nuova Costruzione</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-item reveal" data-category="restauro">
+                        <img src="https://images.unsplash.com/photo-1600125887841-a69070a1a0a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1854&q=80" alt="Palazzo Storico">
+                        <div class="portfolio-overlay">
+                            <h4>Palazzo Ducale, Mantova</h4>
+                            <span>Restauro Conservativo</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-item reveal" data-category="industriale">
+                        <img src="https://images.unsplash.com/photo-1596399469799-0708a18945cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Capannone Industriale">
+                        <div class="portfolio-overlay">
+                            <h4>Centro Logistico, Verona</h4>
+                            <span>Industriale</span>
+                        </div>
+                    </div>
+                     <div class="portfolio-item reveal" data-category="restauro">
+                        <img src="https://images.unsplash.com/photo-1563423793233-1439b85c1561?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Chiesa Antica">
+                        <div class="portfolio-overlay">
+                            <h4>Chiesa di San Pietro, Siena</h4>
+                            <span>Restauro Facciate</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-item reveal" data-category="nuova">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Complesso Residenziale">
+                        <div class="portfolio-overlay">
+                            <h4>Complesso Residenziale, Milano</h4>
+                            <span>Nuova Costruzione</span>
+                        </div>
+                    </div>
+                     <div class="portfolio-item reveal" data-category="restauro">
+                        <img src="https://images.unsplash.com/photo-1582265955142-2b3c75de5c05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Interno storico">
+                        <div class="portfolio-overlay">
+                            <h4>Affreschi Villa Medicea, Firenze</h4>
+                            <span>Restauro Artistico</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CALL TO ACTION -->
+        <section id="cta">
+            <div class="container reveal">
+                <h2>Avete un progetto in mente? Parliamone.</h2>
+                <p>Che si tratti di una visione audace per il futuro o della cura preziosa del passato, siamo pronti ad ascoltarvi e a trasformare le vostre idee in realtà.</p>
+                <a href="#contatti" class="btn btn-primary">Contattaci Ora</a>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contatti">
+            <div class="container">
+                <div class="section-title reveal">
+                    <p>Mettiamoci in contatto</p>
+                    <h2>Iniziamo a costruire insieme.</h2>
+                </div>
+                <div class="contact-grid">
+                    <div class="contact-info reveal">
+                        <h3>Le nostre coordinate</h3>
+                        <p>Siamo a vostra completa disposizione per preventivi, consulenze o per un semplice caffè per discutere del vostro prossimo progetto.</p>
+                        <div class="contact-info-item">
+                            <i class='bx bxs-map'></i>
+                            <p><strong>Indirizzo:</strong><br>Via Roma, 123, 00100 Roma, Italia</p>
+                        </div>
+                        <div class="contact-info-item">
+                            <i class='bx bxs-phone'></i>
+                            <p><strong>Telefono:</strong><br>+39 06 12345678</p>
+                        </div>
+                        <div class="contact-info-item">
+                            <i class='bx bxs-envelope'></i>
+                            <p><strong>Email:</strong><br>info@rubinocostruzioni.it</p>
+                        </div>
+                    </div>
+                    <form action="#" class="contact-form reveal" style="transition-delay: 0.2s;">
+                        <div class="form-group">
+                            <input type="text" name="name" placeholder="Il Vostro Nome" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" placeholder="La Vostra Email" required>
+                        </div>
+                         <div class="form-group">
+                            <input type="text" name="subject" placeholder="Oggetto del Messaggio" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" placeholder="Descrivete il vostro progetto..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Invia Messaggio</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <a href="#home" class="footer-logo">Rubino<span>.</span></a>
+            <p>Dal 1985, uniamo tradizione artigianale e innovazione per costruire opere che resistono alla prova del tempo. La vostra visione, la nostra missione.</p>
+            <div class="social-links">
+                <a href="#"><i class='bx bxl-facebook-square'></i></a>
+                <a href="#"><i class='bx bxl-instagram-alt'></i></a>
+                <a href="#"><i class='bx bxl-linkedin-square'></i></a>
+            </div>
+            <div class="copyright">
+                &copy; <span id="year"></span> Rubino Costruzioni S.r.l. Tutti i diritti riservati.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // --- STICKY HEADER ---
+        const header = document.querySelector('.header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // --- MOBILE NAVIGATION ---
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        const navLinksItems = document.querySelectorAll('.nav-links li a');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        navLinksItems.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            });
+        });
+
+        // --- ACTIVE NAV LINK ON SCROLL ---
+        const sections = document.querySelectorAll('section[id]');
+        window.addEventListener('scroll', navHighlighter);
+
+        function navHighlighter() {
+            let scrollY = window.pageYOffset;
+            sections.forEach(current => {
+                const sectionHeight = current.offsetHeight;
+                const sectionTop = current.offsetTop - 100;
+                let sectionId = current.getAttribute('id');
+                
+                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                    document.querySelector('.nav-links a[href*=' + sectionId + ']').classList.add('active');
+                } else {
+                    document.querySelector('.nav-links a[href*=' + sectionId + ']').classList.remove('active');
+                }
+            });
+        }
+        
+        // --- CURSOR TRAIL EFFECT ---
+        const cursorDot = document.querySelector(".cursor-dot");
+        const cursorOutline = document.querySelector(".cursor-outline");
+        
+        window.addEventListener("mousemove", function (e) {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        const hoverElements = document.querySelectorAll('a, button, .service-card, .portfolio-item, input, textarea');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseover', () => cursorOutline.classList.add('hover'));
+            el.addEventListener('mouseout', () => cursorOutline.classList.remove('hover'));
+        });
+
+
+        // --- SCROLL REVEAL ANIMATION ---
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        revealElements.forEach(el => {
+            revealObserver.observe(el);
+        });
+
+        // --- PORTFOLIO FILTERING ---
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Set active class on button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                const filter = button.getAttribute('data-filter');
+
+                portfolioItems.forEach(item => {
+                    item.style.transition = 'all 0.3s ease';
+                    item.style.transform = 'scale(0.9)';
+                    item.style.opacity = '0';
+                    item.style.display = 'none';
+                    
+                    setTimeout(() => {
+                        if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                           item.style.display = 'block';
+                           setTimeout(() => {
+                                item.style.transform = 'scale(1)';
+                                item.style.opacity = '1';
+                           }, 50);
+                        }
+                    }, 300);
+                });
+            });
+        });
+
+        // --- FOOTER YEAR ---
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+    });
+    </script>
+</body>
+</html>
+```
